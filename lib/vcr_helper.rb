@@ -38,7 +38,6 @@ module VcrHelper
   end
 
   def self.included(base)
-    puts "LOADING VCR HELPER"
     base.class_eval do
       # We use alias method chain here because we need these setup methods to wrap the entire suit
       alias_method_chain :setup, :vcr
