@@ -20,7 +20,6 @@ module VcrHelper
   end
 
   def setup_with_vcr
-    puts __method__
     # call this at the top of ActiveSupport::TestCase
     if record?
       FileUtils.rm_rf "#{VCR.configuration.cassette_library_dir}/#{cassette_name}.yml"
