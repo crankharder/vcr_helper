@@ -26,7 +26,7 @@ module VcrHelper
       VCR.insert_cassette(cassette_name, :record => :all)
       ::FakeWeb.allow_net_connect = true
     else
-      VCR.insert_cassette(cassette_name, :record => :none, :match_requests_on => [:host, :path, :q])
+      VCR.insert_cassette(cassette_name, :record => :none, :match_requests_on => [:host, :path])
       ::FakeWeb.allow_net_connect = false
     end
     setup_without_vcr
