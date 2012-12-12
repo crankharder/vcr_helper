@@ -15,9 +15,17 @@ module VcrHelper
     ENV['VR']
   end
 
+  def build_rspec_cassette_name(example_group)
+    if example_group
+      example_group[:description_args].clone.unshift(*build_rspec_cassette_name(example_group[:example_group]))
+    else
+      []
+    end
+  end
+
   def cassette_name
     if self.respond_to?(:described_class)
-      self.described_class.to_s.underscore.gsub('/','_') + '__' + self.example.metadata[:description_args].first.strip.downcase.squeeze(' ').gsub(/[^a-z0-9\s_]/, '').gsub(' ', '_')
+      build_rspec_cassette_name(self.example.metadata).join("_").underscore.gsub('/','_').gsub(' ', '_').gsub(/[^a-z0-9\s_]/, '')
     else
       (self.class.name.underscore.gsub('/','_') + '__' + self.method_name.gsub(/^test[:_](\s?)/, '')).strip.downcase.squeeze(' ').gsub(/[^a-z0-9\s_]/, '').gsub(' ', '_')
     end
@@ -66,4 +74,3 @@ module VcrHelper
     end
   end
 end
-
