@@ -16,7 +16,15 @@ module VcrHelper
   end
 
   def cassette_name
-    (self.class.name.underscore.gsub('/','_') + '__' + self.method_name.gsub(/^test[:_](\s?)/, '')).strip.downcase.squeeze(' ').gsub(/[^a-z0-9\s_]/, '').gsub(' ', '_')
+    if self.respond_to?(:described_class)
+      self.described_class.to_s.underscore.gsub('/','_') + '__' + self.example.metadata[:description_args].first.strip.downcase.squeeze(' ').gsub(/[^a-z0-9\s_]/, '').gsub(' ', '_')
+    else
+      (self.class.name.underscore.gsub('/','_') + '__' + self.method_name.gsub(/^test[:_](\s?)/, '')).strip.downcase.squeeze(' ').gsub(/[^a-z0-9\s_]/, '').gsub(' ', '_')
+    end
+  end
+
+  # This method will be overridden in Test::Unit with the alias_method_chain method below; it exists to make rspec work
+  def setup_without_vcr
   end
 
   def setup_with_vcr
@@ -32,6 +40,10 @@ module VcrHelper
     setup_without_vcr
   end
 
+  # This method will be overridden in Test::Unit with the alias_method_chain method below; it exists to make rspec work
+  def teardown_without_vcr
+  end
+
   def teardown_with_vcr
     teardown_without_vcr
     VCR.eject_cassette
@@ -39,9 +51,18 @@ module VcrHelper
 
   def self.included(base)
     base.class_eval do
-      # We use alias method chain here because we need these setup methods to wrap the entire suit
-      alias_method_chain :setup, :vcr
-      alias_method_chain :teardown, :vcr
+      if base.respond_to?(:before)
+        base.before do
+          setup_with_vcr
+        end
+        base.after do
+          teardown_with_vcr
+        end
+      else
+        # We use alias method chain here because we need these setup methods to wrap the entire suit
+        alias_method_chain :setup, :vcr
+        alias_method_chain :teardown, :vcr
+      end
     end
   end
 end
