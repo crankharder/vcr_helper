@@ -1,4 +1,5 @@
 require "vcr_helper/version"
+require 'webmock'
 
 module VcrHelper
   #
@@ -40,10 +41,10 @@ module VcrHelper
     if record?
       FileUtils.rm_rf "#{VCR.configuration.cassette_library_dir}/#{cassette_name}.yml"
       VCR.insert_cassette(cassette_name, :record => :all)
-      ::FakeWeb.allow_net_connect = true
+      ::WebMock.allow_net_connect!
     else
       VCR.insert_cassette(cassette_name, :record => :none, :match_requests_on => [:host, :path])
-      ::FakeWeb.allow_net_connect = false
+      ::WebMock.disable_net_connect!
     end
     setup_without_vcr
   end
