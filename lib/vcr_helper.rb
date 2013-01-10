@@ -1,5 +1,7 @@
-require "vcr_helper/version"
-require 'webmock'
+require 'vcr_helper/version'
+
+require 'webmock/test_unit'
+require 'webmock/rspec'
 
 module VcrHelper
   #
