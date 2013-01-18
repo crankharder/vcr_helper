@@ -1,7 +1,11 @@
 require 'vcr_helper/version'
 
-require 'webmock/test_unit'
-require 'webmock/rspec'
+if defined?(Test::Unit)
+  require 'webmock/test_unit'
+end
+if defined?(Rspec)
+  require 'webmock/rspec'
+end
 
 module VcrHelper
   #
