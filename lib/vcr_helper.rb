@@ -1,3 +1,4 @@
+require 'vcr'
 require 'vcr_helper/version'
 
 if defined?(Test::Unit)
