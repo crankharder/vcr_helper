@@ -34,7 +34,10 @@ module VcrHelper
     if self.respond_to?(:described_class)
       build_rspec_cassette_name(self.example.metadata).join("_").underscore.gsub('/','_').gsub(' ', '_').gsub(/[^a-z0-9\s_]/, '')
     else
-      (self.class.name.underscore.gsub('/','_') + '__' + self.method_name.gsub(/^test[:_](\s?)/, '')).strip.downcase.squeeze(' ').gsub(/[^a-z0-9\s_]/, '').gsub(' ', '_')
+      test_class = self.class.name.underscore.gsub('/','_')
+      test_method = self.method_name.gsub(/^test[:_]+(\s?)/, '')
+      class_and_method = (test_class + '__' + test_method)
+      class_and_method.strip.downcase.squeeze(' ').gsub(/[^a-z0-9\s_]/, '').gsub(' ', '_')
     end
   end
 
