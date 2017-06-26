@@ -14,7 +14,7 @@ module VcrHelper
   #
   # Pass VR=true to a test or rake to open network connectivity and re-record all requests and responses
   # Otherwise, blocks all network connectivity and uses cassettes to replay requests and responses.
-  # 
+  #
   # Stores all cassettes in test/vcr_cassettes.
   # Each test case is saved to a different file.
   #
@@ -79,8 +79,10 @@ module VcrHelper
         end
       else
         # We use alias method chain here because we need these setup methods to wrap the entire suit
-        alias_method_chain :setup, :vcr
-        alias_method_chain :teardown, :vcr
+        alias_method :setup_without_vcr, :setup
+        alias_method :setup, :setup_with_vcr
+        alias_method :teardown_without_vcr, :teardown
+        alias_method :teardown, :teardown_with_vcr
       end
     end
   end
